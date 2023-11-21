@@ -3,13 +3,10 @@ import time
 from functools import cache
 
 
-vault_matrix = []
-
 def get_vault_dim(file_content):
     lines = file_content.strip().split('\n')
     if not lines:
-        raise ValueError
-
+        raise ValueError ("File is empty")
     first_line = lines[0].strip()
     num_col = len(first_line.split(','))
     num_row = len(lines)
@@ -30,7 +27,7 @@ def find_optimal_path(col, row):
     if col < 0 or row < 0:
         return 0, ""
 
-    #recursive case
+    #recursive case 
     move_north, path_north = find_optimal_path(col, row - 1)
     move_west, path_west = find_optimal_path(col - 1, row)
 
