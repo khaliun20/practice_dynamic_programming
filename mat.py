@@ -2,51 +2,47 @@ import sys
 import time
 from functools import cache
 
-
-
-def format_matrices(file_content):
-    lines = file_content.strip().split('\n')
-    if not lines:
-        raise ValueError("File is empty")
-    matrices = []
-    for i, line in enumerate(lines):
-        name, x, y = line.split(",")
-        matrices.append((name, int(x), int(y)))
-    return matrices
-
 @cache
-def matrix_chain(matrices):
-
+def matrix_multiplication(matrices, i, j):
     if i == j:
-        return 0
-    min_val = float('inf')
-    for k in range(i, j):
-        count = (MatrixChain(p, i, k) +
-                 MatrixChain(p, k+1, j) +
-                 p[i-1]*p[k]*p[j])
-        if count < min_val:
-            min_val = count
-    return min_val
+        return matrices[i][0], 0 
+    else:
+        min_cost = float('inf')
+        min_expression = ""
+        for k in range(i, j):
+            left_expr, left_cost = matrix_multiplication(matrices, i, k)
+            right_expr, right_cost = matrix_multiplication(matrices, k+1, j)
+            current_cost = matrices[i][1] * matrices[k][2] * matrices[j][2]
+            total_cost = left_cost + right_cost + current_cost
+
+            if total_cost < min_cost:
+                min_cost = total_cost
+                min_expression = f"({left_expr} * {right_expr})"
+        
+        return min_expression, min_cost
+
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: python mat2.py <filename>")
+        return
+
+    filename = sys.argv[1]
+    matrices = []
+
+    with open(filename, 'r') as file:
+        for line in file:
+            name, rows, columns = line.strip().split(',')
+            matrices.append((name, int(rows), int(columns)))
+
+    matrices = tuple(matrices) 
+
+    start_time = time.perf_counter_ns()
+    expression, operations = matrix_multiplication(matrices, 0, len(matrices)-1)
+    end_time = time.perf_counter_ns()
+
+    print(expression)
+    print(operations)
+    print(end_time - start_time)
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python mat.py <file_path>")
-        sys.exit(1)
-
-    file_path = sys.argv[1]
-    try:
-        with open(file_path, 'r') as file:
-            file_content = file.read()        
-        matrices = format_matrices(file_content)
-        tuple_matrices = tuple(matrices)
-        start_time = time.perf_counter_ns()
-        matrix_chain(tuple_matrices)      
-        end_time = time.perf_counter_ns()
-
-        print(end_time - start_time)
-    except FileNotFoundError:
-        print(f"Error: File not found: {test_file}")
-        sys.exit(1)
-    except ValueError as e:
-        print(f"ValueError: {str(e)}")
-        sys.exit(1)
+    main()

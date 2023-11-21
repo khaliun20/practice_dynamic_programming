@@ -36,7 +36,7 @@ def find_optimal_path(col, row):
     else:
         return vault_matrix[row][col] + move_west, path_west + "W"
 
-if __name__ == "__main__":
+def main(): 
     if len(sys.argv) != 2:
         print("Usage: python vault.py <file_path>")
         sys.exit(1)
@@ -62,3 +62,9 @@ if __name__ == "__main__":
     except ValueError as ve:
         print(f"Error: {ve}")
         sys.exit(1)
+
+
+
+if __name__ == "__main__":
+    main()
+    
