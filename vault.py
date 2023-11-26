@@ -66,5 +66,6 @@ def main():
 
 
 if __name__ == "__main__":
+    sys.setrecursionlimit(4000)
     main()
     
