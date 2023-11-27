@@ -17,7 +17,7 @@ def matrix_multiplication(matrices, i, j):
 
             if total_cost < min_cost:
                 min_cost = total_cost
-                min_expression = f"({left_expr} * {right_expr})"
+                min_expression = f"({left_expr} , {right_expr})"
         
         return min_expression, min_cost
 
